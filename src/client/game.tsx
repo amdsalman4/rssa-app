@@ -1,20 +1,34 @@
-//MAIN ENTRY POINT FOR APP
-
 import './index.css';
-
-import { StrictMode } from 'react';
+import { StrictMode, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { navigateTo } from '@devvit/web/client';
-import { useCounter } from './hooks/useCounter';
+import Home from './pages/Home';
+import StockDetails from './pages/StockDetails';
 
 export const App = () => {
+  const [currentPage, setCurrentPage] = useState<'home' | 'stock'>('home');
+  const [selectedTicker, setSelectedTicker] = useState<string>('');
+
+  const navigateToStock = (ticker: string) => {
+    setSelectedTicker(ticker);
+    setCurrentPage('stock');
+  };
+
+  const navigateToHome = () => {
+    setCurrentPage('home');
+    setSelectedTicker('');
+  };
+
   return (
-    <div className="flex relative flex-col justify-center items-center min-h-screen gap-4 bg-white dark:bg-gray-900">
-    
-      <div className="flex flex-col items-center gap-2">
-        <h1>This is our reddit stock sentiment analysis app</h1>
-        
-      </div>
+    <div className="min-h-screen">
+      {currentPage === 'home' && (
+        <Home onStockSelect={navigateToStock} />
+      )}
+      {currentPage === 'stock' && (
+        <StockDetails 
+          ticker={selectedTicker} 
+          onBack={navigateToHome} 
+        />
+      )}
     </div>
   );
 };
