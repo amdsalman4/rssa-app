@@ -19,7 +19,6 @@ function Home({ onStockSelect }: HomeProps) {
     try {
       console.log('Testing Reddit API for ticker:', tickerSymbol);
       
-      // Call YOUR backend, which then calls Reddit
       const response = await fetch('/api/reddit/search', {
         method: 'POST',
         headers: {
@@ -36,8 +35,8 @@ function Home({ onStockSelect }: HomeProps) {
         setTestResults(data);
         console.log(`✅ Found ${data.count} posts about $${data.ticker}`);
       } else {
-        setError(data.error || 'Failed to fetch posts');
-        console.error('❌ Error:', data.error);
+        setError(data.message || data.error || 'Failed to fetch posts');
+        console.error('❌ Error:', data.message);
       }
     } catch (err) {
       console.error('Error calling Reddit API:', err);
@@ -50,8 +49,6 @@ function Home({ onStockSelect }: HomeProps) {
   const handleSearch = async () => {
     if (ticker.trim()) {
       await testRedditAPI(ticker.toUpperCase());
-      // Uncomment to navigate after successful test:
-      // onStockSelect(ticker.toUpperCase());
     }
   };
 
@@ -109,9 +106,9 @@ function Home({ onStockSelect }: HomeProps) {
         {/* Test Results Display */}
         {testResults && (
           <div className="mb-6 p-4 bg-green-500/20 border border-green-500/50 rounded-lg text-left">
-            <h3 className="text-green-300 font-bold mb-2">✅ API Test Successful!</h3>
+            <h3 className="text-green-300 font-bold mb-2">✅ Real Reddit API Success!</h3>
             <p className="text-sm text-green-200">
-              Found <strong>{testResults.count}</strong> posts about <strong>${testResults.ticker}</strong>
+              Found <strong>{testResults.count}</strong> real posts about <strong>${testResults.ticker}</strong>
             </p>
             <div className="mt-3 max-h-40 overflow-y-auto space-y-2">
               {testResults.data?.slice(0, 3).map((post: any) => (
